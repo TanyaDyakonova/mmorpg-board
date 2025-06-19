@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<h2>{{ post.title }}</h2>
+
+<div class="mb-3">
+<div>{{ post.content|safe }}</div>
+
+  <p>
+    <strong>Категория:</strong> {{ post.category.get_name_display }}<br>
+    <strong>Автор:</strong> {{ post.author.username }}<br>
+    <strong>Опубликовано:</strong> {{ post.created_at|date:"d M Y H:i" }}
+  </p>
+
+  {% if user == post.author %}
+    <a href="{% url 'post_edit' post.pk %}" class="btn btn-outline-primary btn-sm">Изменить</a>
+    <a href="{% url 'post_delete' post.pk %}" class="btn btn-outline-danger btn-sm">Удалить</a>
+  {% endif %}
+</div>
+
+<hr>
+
+<h4>Отклики</h4>
+<ul class="list-group mb-4">
+  {% for reply in replies %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ reply.user }}</strong>: {{ reply.text }}
+        {% if reply.accepted %}
+          <span class="badge bg-success ms-2">Принят</span>
+        {% endif %}
+      </div>
+    </li>
+  {% empty %}
+    <li class="list-group-item">Пока нет откликов.</li>
+  {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+  <h4>Откликнуться</h4>
+  <form method="post" class="mb-5">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Отправить отклик</button>
+  </form>
+{% else %}
+  <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отклик.</p>
+{% endif %}
+{% endblock %}
