@@ -1,0 +1,16 @@
+# Python
+*.pyc
+__pycache__/
+
+# Virtual env
+.venv/
+
+# Django
+db.sqlite3
+/media/
+
+# VS Code
+.vscode/
+
+# Secret files
+.env
